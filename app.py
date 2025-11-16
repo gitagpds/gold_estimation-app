@@ -9,11 +9,25 @@ import os
 st.set_page_config(page_title="Kriging Gold Estimation", layout="wide")
 
 # ===========================
+# CACHE DATA
+# ===========================
+@st.cache_data
+def load_excel(file_path):
+    return pd.read_excel(file_path)
+
+# Load semua dataset sekaligus
+df_collar = load_excel(os.path.join("data", "collar_common.xlsx"))
+df_sample = load_excel(os.path.join("data", "sample_common.xlsx"))
+df_survey = load_excel(os.path.join("data", "survey_common.xlsx"))
+df_pre = load_excel(os.path.join("data", "fix_data.xlsx"))
+df_krig1 = load_excel(os.path.join("data", "data_kriging.xlsx"))
+df_krig2 = load_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
+
+# ===========================
 # SIDEBAR MENU CUSTOM
 # ===========================
 st.sidebar.markdown("<h2 style='text-align: center;'>MENU</h2>", unsafe_allow_html=True)
 
-# Tombol navigasi manual
 menu = None
 if st.sidebar.button("DATASET"):
     menu = "Dataset"
@@ -35,34 +49,28 @@ if menu == "Dataset":
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
 
     with tab1:
-        st.write("Dataset Collar")
-        df_collar = pd.read_excel(os.path.join("data", "collar_common.xlsx"))
-        st.dataframe(df_collar, use_container_width=True)
+        st.write("Dataset Collar (Preview 1000 baris)")
+        st.dataframe(df_collar.head(1000), use_container_width=True)
 
     with tab2:
-        st.write("Dataset Sample")
-        df_sample = pd.read_excel(os.path.join("data", "sample_common.xlsx"))
-        st.dataframe(df_sample, use_container_width=True)
+        st.write("Dataset Sample (Preview 1000 baris)")
+        st.dataframe(df_sample.head(1000), use_container_width=True)
 
     with tab3:
-        st.write("Dataset Survey")
-        df_survey = pd.read_excel(os.path.join("data", "survey_common.xlsx"))
-        st.dataframe(df_survey, use_container_width=True)
+        st.write("Dataset Survey (Preview 1000 baris)")
+        st.dataframe(df_survey.head(1000), use_container_width=True)
 
     st.subheader("2️⃣ DATASET SETELAH PREPROCESSING")
-    df_pre = pd.read_excel(os.path.join("data", "fix_data.xlsx"))
-    st.dataframe(df_pre, use_container_width=True)
+    st.dataframe(df_pre.head(1000), use_container_width=True)
 
     st.subheader("3️⃣ DATASET HASIL KRIGING")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
 
     with tab1:
-        df_krig1 = pd.read_excel(os.path.join("data", "data_kriging.xlsx"))
-        st.dataframe(df_krig1, use_container_width=True)
+        st.dataframe(df_krig1.head(1000), use_container_width=True)
 
     with tab2:
-        df_krig2 = pd.read_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
-        st.dataframe(df_krig2, use_container_width=True)
+        st.dataframe(df_krig2.head(1000), use_container_width=True)
 
 # ===========================
 # HALAMAN 2: PETA HASIL KRIGING
@@ -71,36 +79,39 @@ elif menu == "Peta Hasil Kriging":
     st.title("🗺️ PETA HASIL KRIGING")
 
     st.subheader("1️⃣ PETA DATASET SETELAH PREPROCESSING")
-    df_map = pd.read_excel(os.path.join("data", "fix_data.xlsx"))
     tab1, tab2 = st.tabs(["Peta 2D", "Peta 3D"])
     with tab1:
-        fig2d = px.scatter(df_map, x='X_sample', y='Y_sample', color='Au_composite', title="Peta 2D Au_composite")
+        df_map_sample = df_pre.sample(min(5000, len(df_pre)))  # Ambil sample maksimal 5000 titik
+        fig2d = px.scatter(df_map_sample, x='X_sample', y='Y_sample', color='Au_composite', title="Peta 2D Au_composite")
         st.plotly_chart(fig2d, use_container_width=True)
     with tab2:
-        fig3d = px.scatter_3d(df_map, x='X_sample', y='Y_sample', z='Z_sample', color='Au_composite', title="Peta 3D Au_composite")
+        df_map_sample3d = df_pre.sample(min(5000, len(df_pre)))
+        fig3d = px.scatter_3d(df_map_sample3d, x='X_sample', y='Y_sample', z='Z_sample', color='Au_composite', title="Peta 3D Au_composite")
         st.plotly_chart(fig3d, use_container_width=True)
 
     st.subheader("2️⃣ PETA KRIGING")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
 
     with tab1:
-        df_krig_before = pd.read_excel(os.path.join("data", "data_kriging.xlsx"))
         subtab1, subtab2 = st.tabs(["Peta 2D", "Peta 3D"])
+        df_plot2d = df_krig1.sample(min(5000, len(df_krig1)))
+        df_plot3d = df_krig1.sample(min(5000, len(df_krig1)))
         with subtab1:
-            fig2d_before = px.scatter(df_krig_before, x='X', y='Y', color='Au', title="Peta 2D Sebelum Optimasi")
+            fig2d_before = px.scatter(df_plot2d, x='X', y='Y', color='Au', title="Peta 2D Sebelum Optimasi")
             st.plotly_chart(fig2d_before, use_container_width=True)
         with subtab2:
-            fig3d_before = px.scatter_3d(df_krig_before, x='X', y='Y', z='Z', color='Au', title="Peta 3D Sebelum Optimasi")
+            fig3d_before = px.scatter_3d(df_plot3d, x='X', y='Y', z='Z', color='Au', title="Peta 3D Sebelum Optimasi")
             st.plotly_chart(fig3d_before, use_container_width=True)
 
     with tab2:
-        df_krig_after = pd.read_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
         subtab1, subtab2 = st.tabs(["Peta 2D", "Peta 3D"])
+        df_plot2d_after = df_krig2.sample(min(5000, len(df_krig2)))
+        df_plot3d_after = df_krig2.sample(min(5000, len(df_krig2)))
         with subtab1:
-            fig2d_after = px.scatter(df_krig_after, x='X', y='Y', color='Au', title="Peta 2D Sesudah Optimasi")
+            fig2d_after = px.scatter(df_plot2d_after, x='X', y='Y', color='Au', title="Peta 2D Sesudah Optimasi")
             st.plotly_chart(fig2d_after, use_container_width=True)
         with subtab2:
-            fig3d_after = px.scatter_3d(df_krig_after, x='X', y='Y', z='Z', color='Au', title="Peta 3D Sesudah Optimasi")
+            fig3d_after = px.scatter_3d(df_plot3d_after, x='X', y='Y', z='Z', color='Au', title="Peta 3D Sesudah Optimasi")
             st.plotly_chart(fig3d_after, use_container_width=True)
 
 # ===========================
