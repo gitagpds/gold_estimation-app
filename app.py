@@ -24,40 +24,39 @@ df_krig1 = load_excel(os.path.join("data", "data_kriging.xlsx"))
 df_krig2 = load_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
 
 # ===========================
-# SIDEBAR MENU CUSTOM
+# SIDEBAR MENU CUSTOM (FULL WIDTH)
 # ===========================
 st.sidebar.markdown("<h2 style='text-align: center;'>MENU</h2>", unsafe_allow_html=True)
 
-menu = None
-if st.sidebar.button("DATASET"):
-    menu = "Dataset"
-if st.sidebar.button("PETA KRIGING"):
-    menu = "Peta Hasil Kriging"
-if st.sidebar.button("ESTIMASI CADANGAN"):
-    menu = "Estimasi Cadangan"
-
-if menu is None:
-    menu = "Dataset"
+# Tombol vertikal full width
+menu = "Dataset"  # default
+with st.sidebar:
+    if st.button("DATASET", key="btn_dataset"):
+        menu = "Dataset"
+    if st.button("PETA KRIGING", key="btn_peta"):
+        menu = "Peta Hasil Kriging"
+    if st.button("ESTIMASI CADANGAN", key="btn_estimasi"):
+        menu = "Estimasi Cadangan"
 
 # ===========================
 # HALAMAN 1: DATASET
 # ===========================
 if menu == "Dataset":
-    st.title("📊 DATASET")
+    st.title("📊 DATASET (Preview 1000 baris)")
 
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
 
     with tab1:
-        st.write("Dataset Collar (Preview 1000 baris)")
+        st.write("Dataset Collar")
         st.dataframe(df_collar.head(1000), use_container_width=True)
 
     with tab2:
-        st.write("Dataset Sample (Preview 1000 baris)")
+        st.write("Dataset Sample")
         st.dataframe(df_sample.head(1000), use_container_width=True)
 
     with tab3:
-        st.write("Dataset Survey (Preview 1000 baris)")
+        st.write("Dataset Survey")
         st.dataframe(df_survey.head(1000), use_container_width=True)
 
     st.subheader("2️⃣ DATASET SETELAH PREPROCESSING")
@@ -138,10 +137,13 @@ elif menu == "Estimasi Cadangan":
         st.table(df_est_after)
 
     st.subheader("📈 PERBANDINGAN SEBELUM DAN SESUDAH OPTIMASI")
+    # Buat bar chart per parameter, supaya beda bar chart terlihat
     df_compare = pd.DataFrame({
         'Parameter': ['Volume', 'Tonase', 'Kadar Rata-rata'],
         'Sebelum': [192031250, 460875000.0, 0.8770],
         'Sesudah': [201218750, 482925000.0, 0.8946]
     })
-    fig_bar = px.bar(df_compare, x='Parameter', y=['Sebelum', 'Sesudah'], barmode='group', title="Perbandingan Estimasi Cadangan")
+    # Ubah ke format long untuk Plotly supaya tiap parameter terlihat jelas
+    df_long = df_compare.melt(id_vars='Parameter', value_vars=['Sebelum', 'Sesudah'], var_name='Status', value_name='Nilai')
+    fig_bar = px.bar(df_long, x='Parameter', y='Nilai', color='Status', barmode='group', title="Perbandingan Estimasi Cadangan")
     st.plotly_chart(fig_bar, use_container_width=True)
