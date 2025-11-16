@@ -15,7 +15,7 @@ st.set_page_config(page_title="Kriging Gold Estimation", layout="wide")
 def load_excel(file_path):
     return pd.read_excel(file_path)
 
-# Load semua dataset sekaligus
+# Load semua dataset
 df_collar = load_excel(os.path.join("data", "collar_common.xlsx"))
 df_sample = load_excel(os.path.join("data", "sample_common.xlsx"))
 df_survey = load_excel(os.path.join("data", "survey_common.xlsx"))
@@ -24,19 +24,28 @@ df_krig1 = load_excel(os.path.join("data", "data_kriging.xlsx"))
 df_krig2 = load_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
 
 # ===========================
-# SIDEBAR MENU CUSTOM (FULL WIDTH)
+# SESSION STATE UNTUK NAVIGASI
+# ===========================
+if 'page' not in st.session_state:
+    st.session_state.page = "Dataset"
+
+# ===========================
+# SIDEBAR MENU CUSTOM (MENARIK)
 # ===========================
 st.sidebar.markdown("<h2 style='text-align: center;'>MENU</h2>", unsafe_allow_html=True)
 
-# Tombol vertikal full width
-menu = "Dataset"  # default
+# Gunakan container untuk tombol vertical penuh sidebar
 with st.sidebar:
-    if st.button("DATASET", key="btn_dataset"):
-        menu = "Dataset"
-    if st.button("PETA KRIGING", key="btn_peta"):
-        menu = "Peta Hasil Kriging"
-    if st.button("ESTIMASI CADANGAN", key="btn_estimasi"):
-        menu = "Estimasi Cadangan"
+    if st.button("DATASET"):
+        st.session_state.page = "Dataset"
+    st.markdown("---")
+    if st.button("PETA KRIGING"):
+        st.session_state.page = "Peta Hasil Kriging"
+    st.markdown("---")
+    if st.button("ESTIMASI CADANGAN"):
+        st.session_state.page = "Estimasi Cadangan"
+
+menu = st.session_state.page
 
 # ===========================
 # HALAMAN 1: DATASET
@@ -80,7 +89,7 @@ elif menu == "Peta Hasil Kriging":
     st.subheader("1️⃣ PETA DATASET SETELAH PREPROCESSING")
     tab1, tab2 = st.tabs(["Peta 2D", "Peta 3D"])
     with tab1:
-        df_map_sample = df_pre.sample(min(5000, len(df_pre)))  # Ambil sample maksimal 5000 titik
+        df_map_sample = df_pre.sample(min(5000, len(df_pre)))
         fig2d = px.scatter(df_map_sample, x='X_sample', y='Y_sample', color='Au_composite', title="Peta 2D Au_composite")
         st.plotly_chart(fig2d, use_container_width=True)
     with tab2:
@@ -137,13 +146,18 @@ elif menu == "Estimasi Cadangan":
         st.table(df_est_after)
 
     st.subheader("📈 PERBANDINGAN SEBELUM DAN SESUDAH OPTIMASI")
-    # Buat bar chart per parameter, supaya beda bar chart terlihat
-    df_compare = pd.DataFrame({
+
+    # Buat chart terpisah per parameter supaya beda scale terlihat
+    est_data = {
         'Parameter': ['Volume', 'Tonase', 'Kadar Rata-rata'],
         'Sebelum': [192031250, 460875000.0, 0.8770],
         'Sesudah': [201218750, 482925000.0, 0.8946]
-    })
-    # Ubah ke format long untuk Plotly supaya tiap parameter terlihat jelas
-    df_long = df_compare.melt(id_vars='Parameter', value_vars=['Sebelum', 'Sesudah'], var_name='Status', value_name='Nilai')
-    fig_bar = px.bar(df_long, x='Parameter', y='Nilai', color='Status', barmode='group', title="Perbandingan Estimasi Cadangan")
-    st.plotly_chart(fig_bar, use_container_width=True)
+    }
+
+    for i, param in enumerate(est_data['Parameter']):
+        df_bar = pd.DataFrame({
+            'Status': ['Sebelum', 'Sesudah'],
+            'Nilai': [est_data['Sebelum'][i], est_data['Sesudah'][i]]
+        })
+        fig = px.bar(df_bar, x='Status', y='Nilai', color='Status', title=f"Perbandingan {param}")
+        st.plotly_chart(fig, use_container_width=True)
