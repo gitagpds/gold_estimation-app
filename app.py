@@ -42,21 +42,21 @@ with st.sidebar:
 # HALAMAN 1: DATASET
 # ===========================
 if menu == "Dataset":
-    st.title("📊 DATASET (Preview 1000 baris)")
+    st.title("📊 DATASET")
 
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
 
     with tab1:
-        st.write("Dataset Collar")
+        st.write("Dataset Collar (Preview 1000 baris)")
         st.dataframe(df_collar.head(1000), use_container_width=True)
 
     with tab2:
-        st.write("Dataset Sample")
+        st.write("Dataset Sample (Preview 1000 baris)")
         st.dataframe(df_sample.head(1000), use_container_width=True)
 
     with tab3:
-        st.write("Dataset Survey")
+        st.write("Dataset Survey (Preview 1000 baris)")
         st.dataframe(df_survey.head(1000), use_container_width=True)
 
     st.subheader("2️⃣ DATASET SETELAH PREPROCESSING")
