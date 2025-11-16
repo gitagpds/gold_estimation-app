@@ -32,26 +32,26 @@ if 'page' not in st.session_state:
     st.session_state.page = "Dataset"
 
 # ===========================
-# SIDEBAR MENU CUSTOM (CARD-LIKE, TENGAH-TENGAH)
+# SIDEBAR MENU CUSTOM (BUTTON CENTERED DAN FULL WIDTH)
 # ===========================
 st.markdown(
     """
     <style>
-    /* Tombol sidebar */
-    div.stButton > button {
-        width: 90%;          
-        padding: 15px;       
-        margin: 15px auto;   
-        display: block;
-        text-align: center;  
-        background-color: #4CAF50;
-        color: white;
+    /* Wrap tombol sidebar agar center */
+    .sidebar .stButton button {
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        text-align: center;
         font-size: 18px;
-        border-radius: 10px;
+        color: white;
+        background-color: #4CAF50;
         border: none;
+        border-radius: 10px;
         cursor: pointer;
+        display: block;
     }
-    div.stButton > button:hover {
+    .sidebar .stButton button:hover {
         background-color: #45a049;
     }
     </style>
@@ -74,7 +74,6 @@ menu = st.session_state.page
 # ===========================
 if menu == "Dataset":
     st.title("📊 DATASET")
-
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
     with tab1:
@@ -102,7 +101,6 @@ if menu == "Dataset":
 # ===========================
 elif menu == "Peta Hasil Kriging":
     st.title("🗺️ PETA HASIL KRIGING")
-
     st.subheader("1️⃣ PETA DATASET SETELAH PREPROCESSING")
     tab1, tab2 = st.tabs(["Peta 2D", "Peta 3D"])
     with tab1:
@@ -142,7 +140,6 @@ elif menu == "Peta Hasil Kriging":
 # ===========================
 elif menu == "Estimasi Cadangan":
     st.title("⛏️ ESTIMASI CADANGAN EMAS")
-
     st.subheader("TABEL RINGKASAN VOLUME, TONASE, DAN KADAR RATA-RATA AU")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
     with tab1:
@@ -159,14 +156,11 @@ elif menu == "Estimasi Cadangan":
         st.table(df_est_after)
 
     st.subheader("📈 PERBANDINGAN SEBELUM DAN SESUDAH OPTIMASI")
-    # Data
     est_data = {
         'Parameter': ['Volume', 'Tonase', 'Kadar Rata-rata'],
         'Sebelum': [192031250, 460875000.0, 0.8770],
         'Sesudah': [201218750, 482925000.0, 0.8946]
     }
-
-    # Horizontal bar chart sejajar
     fig = make_subplots(rows=1, cols=3, subplot_titles=est_data['Parameter'])
     for i, param in enumerate(est_data['Parameter']):
         fig.add_trace(
