@@ -37,18 +37,18 @@ menu = st.sidebar.radio(
 # HALAMAN 1: DATASET
 # ===========================
 if menu == "Dataset":
-    st.title("📊 DATASET")
+    st.title("📊 DATASET (Preview 1000 baris)")
 
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
     with tab1:
-        st.write("Dataset Collar (Preview 1000 baris)")
+        st.write("Dataset Collar")
         st.dataframe(df_collar.head(1000), use_container_width=True)
     with tab2:
-        st.write("Dataset Sample (Preview 1000 baris)")
+        st.write("Dataset Sample")
         st.dataframe(df_sample.head(1000), use_container_width=True)
     with tab3:
-        st.write("Dataset Survey (Preview 1000 baris)")
+        st.write("Dataset Survey")
         st.dataframe(df_survey.head(1000), use_container_width=True)
 
     st.subheader("2️⃣ DATASET SETELAH PREPROCESSING")
@@ -141,3 +141,4 @@ elif menu == "Estimasi Cadangan":
         )
     fig.update_layout(height=400, width=900, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
+
