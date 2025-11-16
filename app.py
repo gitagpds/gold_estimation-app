@@ -32,20 +32,22 @@ if 'page' not in st.session_state:
     st.session_state.page = "Dataset"
 
 # ===========================
-# SIDEBAR MENU CUSTOM (CARD-LIKE)
+# SIDEBAR MENU CUSTOM (CARD-LIKE, TENGAH-TENGAH)
 # ===========================
 st.markdown(
     """
     <style>
+    /* Tombol sidebar */
     div.stButton > button {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 10px;
-        text-align: center;
+        width: 90%;          
+        padding: 15px;       
+        margin: 15px auto;   
+        display: block;
+        text-align: center;  
         background-color: #4CAF50;
         color: white;
-        font-size: 16px;
-        border-radius: 8px;
+        font-size: 18px;
+        border-radius: 10px;
         border: none;
         cursor: pointer;
     }
