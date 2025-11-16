@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 import os
 
 # ===========================
@@ -30,19 +32,38 @@ if 'page' not in st.session_state:
     st.session_state.page = "Dataset"
 
 # ===========================
-# SIDEBAR MENU CUSTOM (MENARIK)
+# SIDEBAR MENU CUSTOM (CARD-LIKE)
 # ===========================
-st.sidebar.markdown("<h2 style='text-align: center;'>MENU</h2>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+    .sidebar-button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 10px;
+        text-align: center;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+    }
+    .sidebar-button:hover {
+        background-color: #45a049;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-# Gunakan container untuk tombol vertical penuh sidebar
+# Tombol sidebar dengan CSS
 with st.sidebar:
-    if st.button("DATASET"):
+    if st.button("DATASET", key="btn_dataset"):
         st.session_state.page = "Dataset"
-    st.markdown("---")
-    if st.button("PETA KRIGING"):
-        st.session_state.page = "Peta Hasil Kriging"
-    st.markdown("---")
-    if st.button("ESTIMASI CADANGAN"):
+    st.markdown("<button class='sidebar-button'>PETA KRIGING</button>", unsafe_allow_html=True)
+    if st.button("ESTIMASI CADANGAN", key="btn_estimasi"):
         st.session_state.page = "Estimasi Cadangan"
 
 menu = st.session_state.page
@@ -146,18 +167,25 @@ elif menu == "Estimasi Cadangan":
         st.table(df_est_after)
 
     st.subheader("📈 PERBANDINGAN SEBELUM DAN SESUDAH OPTIMASI")
-
-    # Buat chart terpisah per parameter supaya beda scale terlihat
+    # Data
     est_data = {
         'Parameter': ['Volume', 'Tonase', 'Kadar Rata-rata'],
         'Sebelum': [192031250, 460875000.0, 0.8770],
         'Sesudah': [201218750, 482925000.0, 0.8946]
     }
 
+    # Buat horizontal subplots
+    fig = make_subplots(rows=1, cols=3, subplot_titles=est_data['Parameter'])
     for i, param in enumerate(est_data['Parameter']):
-        df_bar = pd.DataFrame({
-            'Status': ['Sebelum', 'Sesudah'],
-            'Nilai': [est_data['Sebelum'][i], est_data['Sesudah'][i]]
-        })
-        fig = px.bar(df_bar, x='Status', y='Nilai', color='Status', title=f"Perbandingan {param}")
-        st.plotly_chart(fig, use_container_width=True)
+        fig.add_trace(
+            go.Bar(
+                x=['Sebelum', 'Sesudah'],
+                y=[est_data['Sebelum'][i], est_data['Sesudah'][i]],
+                name=param,
+                marker_color=['#636EFA', '#EF553B']
+            ),
+            row=1, col=i+1
+        )
+
+    fig.update_layout(height=400, width=900, showlegend=False)
+    st.plotly_chart(fig, use_container_width=True)
