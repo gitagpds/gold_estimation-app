@@ -26,54 +26,19 @@ df_krig1 = load_excel(os.path.join("data", "data_kriging.xlsx"))
 df_krig2 = load_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
 
 # ===========================
-# SESSION STATE UNTUK NAVIGASI
+# NAVIGASI DENGAN RADIO
 # ===========================
-if 'page' not in st.session_state:
-    st.session_state.page = "Dataset"
-
-# ===========================
-# SIDEBAR MENU CUSTOM (BUTTON CENTERED DAN FULL WIDTH)
-# ===========================
-st.markdown(
-    """
-    <style>
-    /* Wrap tombol sidebar agar center */
-    .sidebar .stButton button {
-        width: 100%;
-        padding: 15px;
-        margin: 10px 0;
-        text-align: center;
-        font-size: 18px;
-        color: white;
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        display: block;
-    }
-    .sidebar .stButton button:hover {
-        background-color: #45a049;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
+menu = st.sidebar.radio(
+    "🔹 MENU",
+    options=["Dataset", "Peta Hasil Kriging", "Estimasi Cadangan"]
 )
-
-with st.sidebar:
-    if st.button("DATASET"):
-        st.session_state.page = "Dataset"
-    if st.button("PETA KRIGING"):
-        st.session_state.page = "Peta Hasil Kriging"
-    if st.button("ESTIMASI CADANGAN"):
-        st.session_state.page = "Estimasi Cadangan"
-
-menu = st.session_state.page
 
 # ===========================
 # HALAMAN 1: DATASET
 # ===========================
 if menu == "Dataset":
     st.title("📊 DATASET")
+
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
     with tab1:
@@ -101,6 +66,7 @@ if menu == "Dataset":
 # ===========================
 elif menu == "Peta Hasil Kriging":
     st.title("🗺️ PETA HASIL KRIGING")
+
     st.subheader("1️⃣ PETA DATASET SETELAH PREPROCESSING")
     tab1, tab2 = st.tabs(["Peta 2D", "Peta 3D"])
     with tab1:
@@ -140,6 +106,7 @@ elif menu == "Peta Hasil Kriging":
 # ===========================
 elif menu == "Estimasi Cadangan":
     st.title("⛏️ ESTIMASI CADANGAN EMAS")
+
     st.subheader("TABEL RINGKASAN VOLUME, TONASE, DAN KADAR RATA-RATA AU")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
     with tab1:
