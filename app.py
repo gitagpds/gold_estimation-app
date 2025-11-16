@@ -37,8 +37,7 @@ if 'page' not in st.session_state:
 st.markdown(
     """
     <style>
-    .sidebar-button {
-        display: block;
+    div.stButton > button {
         width: 100%;
         padding: 12px;
         margin-bottom: 10px;
@@ -50,7 +49,7 @@ st.markdown(
         border: none;
         cursor: pointer;
     }
-    .sidebar-button:hover {
+    div.stButton > button:hover {
         background-color: #45a049;
     }
     </style>
@@ -58,12 +57,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Tombol sidebar dengan CSS
 with st.sidebar:
-    if st.button("DATASET", key="btn_dataset"):
+    if st.button("DATASET"):
         st.session_state.page = "Dataset"
-    st.markdown("<button class='sidebar-button'>PETA KRIGING</button>", unsafe_allow_html=True)
-    if st.button("ESTIMASI CADANGAN", key="btn_estimasi"):
+    if st.button("PETA KRIGING"):
+        st.session_state.page = "Peta Hasil Kriging"
+    if st.button("ESTIMASI CADANGAN"):
         st.session_state.page = "Estimasi Cadangan"
 
 menu = st.session_state.page
@@ -76,15 +75,12 @@ if menu == "Dataset":
 
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
-
     with tab1:
         st.write("Dataset Collar (Preview 1000 baris)")
         st.dataframe(df_collar.head(1000), use_container_width=True)
-
     with tab2:
         st.write("Dataset Sample (Preview 1000 baris)")
         st.dataframe(df_sample.head(1000), use_container_width=True)
-
     with tab3:
         st.write("Dataset Survey (Preview 1000 baris)")
         st.dataframe(df_survey.head(1000), use_container_width=True)
@@ -94,10 +90,8 @@ if menu == "Dataset":
 
     st.subheader("3️⃣ DATASET HASIL KRIGING")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
-
     with tab1:
         st.dataframe(df_krig1.head(1000), use_container_width=True)
-
     with tab2:
         st.dataframe(df_krig2.head(1000), use_container_width=True)
 
@@ -120,7 +114,6 @@ elif menu == "Peta Hasil Kriging":
 
     st.subheader("2️⃣ PETA KRIGING")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
-
     with tab1:
         subtab1, subtab2 = st.tabs(["Peta 2D", "Peta 3D"])
         df_plot2d = df_krig1.sample(min(5000, len(df_krig1)))
@@ -131,7 +124,6 @@ elif menu == "Peta Hasil Kriging":
         with subtab2:
             fig3d_before = px.scatter_3d(df_plot3d, x='X', y='Y', z='Z', color='Au', title="Peta 3D Sebelum Optimasi")
             st.plotly_chart(fig3d_before, use_container_width=True)
-
     with tab2:
         subtab1, subtab2 = st.tabs(["Peta 2D", "Peta 3D"])
         df_plot2d_after = df_krig2.sample(min(5000, len(df_krig2)))
@@ -151,14 +143,12 @@ elif menu == "Estimasi Cadangan":
 
     st.subheader("TABEL RINGKASAN VOLUME, TONASE, DAN KADAR RATA-RATA AU")
     tab1, tab2 = st.tabs(["Sebelum Optimasi", "Sesudah Optimasi"])
-
     with tab1:
         df_est_before = pd.DataFrame({
             'Parameter': ['Volume total ore (m³)', 'Tonase total ore (t)', 'Rata-rata kadar Au ore (g/t)'],
             'Nilai': [192031250, 460875000.0, 0.8770]
         })
         st.table(df_est_before)
-
     with tab2:
         df_est_after = pd.DataFrame({
             'Parameter': ['Volume total ore (m³)', 'Tonase total ore (t)', 'Rata-rata kadar Au ore (g/t)'],
@@ -174,7 +164,7 @@ elif menu == "Estimasi Cadangan":
         'Sesudah': [201218750, 482925000.0, 0.8946]
     }
 
-    # Buat horizontal subplots
+    # Horizontal bar chart sejajar
     fig = make_subplots(rows=1, cols=3, subplot_titles=est_data['Parameter'])
     for i, param in enumerate(est_data['Parameter']):
         fig.add_trace(
@@ -186,6 +176,5 @@ elif menu == "Estimasi Cadangan":
             ),
             row=1, col=i+1
         )
-
     fig.update_layout(height=400, width=900, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
