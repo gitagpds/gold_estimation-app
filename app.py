@@ -71,11 +71,11 @@ elif menu == "Peta Hasil Kriging":
     tab1, tab2 = st.tabs(["Peta 2D", "Peta 3D"])
     with tab1:
         df_map_sample = df_pre.sample(min(5000, len(df_pre)))
-        fig2d = px.scatter(df_map_sample, x='X_sample', y='Y_sample', color='Au_composite', title="Peta 2D Au_composite")
+        fig2d = px.scatter(df_map_sample, x='X', y='Y', color='Au', title="Peta 2D")
         st.plotly_chart(fig2d, use_container_width=True)
     with tab2:
         df_map_sample3d = df_pre.sample(min(5000, len(df_pre)))
-        fig3d = px.scatter_3d(df_map_sample3d, x='X_sample', y='Y_sample', z='Z_sample', color='Au_composite', title="Peta 3D Au_composite")
+        fig3d = px.scatter_3d(df_map_sample3d, x='X', y='Y', z='Z', color='Au', title="Peta 3D")
         st.plotly_chart(fig3d, use_container_width=True)
 
     st.subheader("2️⃣ PETA KRIGING")
@@ -141,5 +141,6 @@ elif menu == "Estimasi Cadangan":
         )
     fig.update_layout(height=400, width=900, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
+
 
 
