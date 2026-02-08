@@ -18,12 +18,12 @@ def load_excel(file_path):
     return pd.read_excel(file_path)
 
 # Load semua dataset
-df_collar = load_excel(os.path.join("data", "collar_common.xlsx"))
-df_sample = load_excel(os.path.join("data", "sample_common.xlsx"))
-df_survey = load_excel(os.path.join("data", "survey_common.xlsx"))
-df_pre = load_excel(os.path.join("data", "fix_data.xlsx"))
-df_krig1 = load_excel(os.path.join("data", "data_kriging.xlsx"))
-df_krig2 = load_excel(os.path.join("data", "data_kriging_optimasi.xlsx"))
+df_collar = load_excel(os.path.join("data", "cleaned_collar.xlsx"))
+df_sample = load_excel(os.path.join("data", "cleaned_sample.xlsx"))
+df_survey = load_excel(os.path.join("data", "cleaned_survey.xlsx"))
+df_pre = load_excel(os.path.join("data", "dataset.xlsx"))
+df_krig1 = load_excel(os.path.join("data", "kriging_standar.xlsx"))
+df_krig2 = load_excel(os.path.join("data", "kriging_optimized.xlsx"))
 
 # ===========================
 # NAVIGASI DENGAN RADIO
@@ -112,21 +112,21 @@ elif menu == "Estimasi Cadangan":
     with tab1:
         df_est_before = pd.DataFrame({
             'Parameter': ['Volume total ore (m³)', 'Tonase total ore (t)', 'Rata-rata kadar Au ore (g/t)'],
-            'Nilai': [192031250, 460875000.0, 0.8770]
+            'Nilai': [163637500, 392730000.0, 0.8713]
         })
         st.table(df_est_before)
     with tab2:
         df_est_after = pd.DataFrame({
             'Parameter': ['Volume total ore (m³)', 'Tonase total ore (t)', 'Rata-rata kadar Au ore (g/t)'],
-            'Nilai': [201218750, 482925000.0, 0.8946]
+            'Nilai': [164900000, 395760000.0, 0.9267]
         })
         st.table(df_est_after)
 
     st.subheader("📈 PERBANDINGAN SEBELUM DAN SESUDAH OPTIMASI")
     est_data = {
         'Parameter': ['Volume', 'Tonase', 'Kadar Rata-rata'],
-        'Sebelum': [192031250, 460875000.0, 0.8770],
-        'Sesudah': [201218750, 482925000.0, 0.8946]
+        'Sebelum': [163637500, 392730000.0, 0.8713],
+        'Sesudah': [164900000, 395760000.0, 0.9267]
     }
     fig = make_subplots(rows=1, cols=3, subplot_titles=est_data['Parameter'])
     for i, param in enumerate(est_data['Parameter']):
@@ -141,4 +141,5 @@ elif menu == "Estimasi Cadangan":
         )
     fig.update_layout(height=400, width=900, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
+
 
