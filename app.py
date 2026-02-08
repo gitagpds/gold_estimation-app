@@ -37,7 +37,7 @@ menu = st.sidebar.radio(
 # HALAMAN 1: DATASET
 # ===========================
 if menu == "Dataset":
-    st.title("📊 DATASET (Preview 1000 baris)")
+    st.title("📊 DATASET")
 
     st.subheader("1️⃣ DATASET AWAL")
     tab1, tab2, tab3 = st.tabs(["Dataset Collar", "Dataset Sample", "Dataset Survey"])
@@ -141,6 +141,7 @@ elif menu == "Estimasi Cadangan":
         )
     fig.update_layout(height=400, width=900, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
+
 
 
 
