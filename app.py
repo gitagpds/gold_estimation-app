@@ -112,21 +112,21 @@ elif menu == "Estimasi Cadangan":
     with tab1:
         df_est_before = pd.DataFrame({
             'Parameter': ['Volume total ore (m³)', 'Tonase total ore (t)', 'Rata-rata kadar Au ore (g/t)'],
-            'Nilai': [163637500, 392730000.0, 0.8713]
+            'Nilai': [138718750, 3329250000, 1.0578]
         })
         st.table(df_est_before)
     with tab2:
         df_est_after = pd.DataFrame({
             'Parameter': ['Volume total ore (m³)', 'Tonase total ore (t)', 'Rata-rata kadar Au ore (g/t)'],
-            'Nilai': [164900000, 395760000.0, 0.9267]
+            'Nilai': [131468750, 3155250000, 0.9888]
         })
         st.table(df_est_after)
 
     st.subheader("📈 PERBANDINGAN SEBELUM DAN SESUDAH OPTIMASI")
     est_data = {
         'Parameter': ['Volume', 'Tonase', 'Kadar Rata-rata'],
-        'Sebelum': [163637500, 392730000.0, 0.8713],
-        'Sesudah': [164900000, 395760000.0, 0.9267]
+        'Sebelum': [138718750, 3329250000, 1.0578],
+        'Sesudah': [131468750, 3155250000.0, 0.9888]
     }
     fig = make_subplots(rows=1, cols=3, subplot_titles=est_data['Parameter'])
     for i, param in enumerate(est_data['Parameter']):
@@ -141,6 +141,7 @@ elif menu == "Estimasi Cadangan":
         )
     fig.update_layout(height=400, width=900, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
+
 
 
 
